@@ -1,3 +1,3 @@
 # Practice-Sort
 
-Practice programming in Go by implementing merge-sort
+Practice programming in Go by implementing merge-sort.
