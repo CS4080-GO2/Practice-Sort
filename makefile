@@ -10,3 +10,9 @@ run:
 build:
 	@clear
 	@go build
+
+
+# Type `make test` to test MergeSort function
+test:
+	@clear
+	@go test -v
