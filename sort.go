@@ -10,34 +10,46 @@ import (
 )
 
 func main() {
-    list := generateList(10)   // Randomly generate list
+    size := 10  // Size of list
 
-    temp := make([]int, 10)
-    for i := 0; i < 10; i++ {
-        temp[i] = list[i]
+    // Test for list size of 10  10,000  10,000,000
+    for i := 0; i < 3; i++ {
+        list := generateList(size)   // Randomly generate list
+
+        temp := make([]int, size)
+        for i := 0; i < size; i++ {
+            temp[i] = list[i]
+        }
+
+        // Want to test if goroutine will increase the speed
+
+        fmt.Println("Testing with a list size of ", size)
+        fmt.Println("--- Regular Merge Sort ---")
+        // fmt.Println("Before:  ", list)
+        start := time.Now()
+        MergeSort(&list)
+        duration := time.Since(start)
+        // fmt.Println("After:  ", list)
+        fmt.Println("Duration:  ", duration, "(microseconds)")
+
+        fmt.Println()
+
+        fmt.Println("--- Merge Sort w/ Goroutine ---")
+        // fmt.Println("Before:  ", temp)
+        start = time.Now()
+        MergeSortGo(&temp)
+        duration = time.Since(start)
+        // fmt.Println("After:  ", temp)
+        fmt.Println("Duration:  ", duration, "(microseconds)")
+        fmt.Println("\n")
+
+        size *= 1000
     }
 
-    // Want to test if goroutine will increase the speed
-    fmt.Println("--- Regular Merge Sort ---")
-    fmt.Println("Before:  ", list)
-    start := time.Now()
-    MergeSort(&list)
-    duration := time.Since(start)
-    fmt.Println("After:  ", list)
-    fmt.Println("Duration:  ", duration, "(microseconds)")
-
-    fmt.Println()
-
-    fmt.Println("--- Merge Sort w/ Goroutine ---")
-    fmt.Println("Before:  ", temp)
-    start = time.Now()
-    MergeSortGo(&temp)
-    duration = time.Since(start)
-    fmt.Println("After:  ", temp)
-    fmt.Println("Duration:  ", duration, "(microseconds)")
-
     /*
-        Explanation on why goroutine made merge sort slower
+        Explanation on why goroutine made merge sort slower for smaller list
+        but faster for larger lists
+        
         https://tinyurl.com/y3kcj2uz
     */
 }
