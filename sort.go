@@ -57,6 +57,8 @@ func MergeSort(list *[]int) {
             }
         }
 
+        // Recursively applying the MergeSort to the left and right sides
+        // Goroutine goes here?
         MergeSort(&left)
         MergeSort(&right)
 
@@ -65,10 +67,15 @@ func MergeSort(list *[]int) {
 }
 
 func Merge(left, right []int) (sortedList []int) {
+    /*
+        Used to merge the left side with the right side
+    */
+
     sortedList = make([]int, len(left) + len(right))    // return a sorted list
 
     i := 0
     for len(left) > 0 && len(right) > 0 {
+        // Taking turns adding the smaller value into the sorted list
         if left[0] < right[0] {
             sortedList[i] = left[0]
             left = left[1:]
@@ -89,5 +96,5 @@ func Merge(left, right []int) (sortedList []int) {
         i++
     }
 
-    return
+    return  // Return the newly sorted list
 }
