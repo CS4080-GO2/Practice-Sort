@@ -6,14 +6,40 @@ import (
     "fmt"   // We would need this to print
     "math/rand" // Required for random generated list
     "time"  // Required for random generated list
-    // "sync"   // Required for WaitGroup if we are using recursion
+    "sync"   // Required for WaitGroup if we are using recursion
 )
 
 func main() {
     list := generateList(10)   // Randomly generate list
+
+    temp := make([]int, 10)
+    for i := 0; i < 10; i++ {
+        temp[i] = list[i]
+    }
+
+    // Want to test if goroutine will increase the speed
+    fmt.Println("--- Regular Merge Sort ---")
     fmt.Println("Before:  ", list)
+    start := time.Now()
     MergeSort(&list)
+    duration := time.Since(start)
     fmt.Println("After:  ", list)
+    fmt.Println("Duration:  ", duration, "(microseconds)")
+
+    fmt.Println()
+
+    fmt.Println("--- Merge Sort w/ Goroutine ---")
+    fmt.Println("Before:  ", temp)
+    start = time.Now()
+    MergeSortGo(&temp)
+    duration = time.Since(start)
+    fmt.Println("After:  ", temp)
+    fmt.Println("Duration:  ", duration, "(microseconds)")
+
+    /*
+        Explanation on why goroutine made merge sort slower
+        https://tinyurl.com/y3kcj2uz
+    */
 }
 
 func generateList(size int) []int {
@@ -33,6 +59,10 @@ func generateList(size int) []int {
 }
 
 func MergeSort(list *[]int) {
+    /*
+        This is a regular merge sort without the goroutine
+    */
+
     size := len(*list)   // Length of the unSortedList
 
     // If the size of the unSortedList is 1 than the list is already sorted
@@ -49,19 +79,53 @@ func MergeSort(list *[]int) {
             Assigned the left side of list to the left
             Assigned the right side of list to the right
         */
-        for i := 0; i < size; i++ {
-            if i < middle {
-                left[i] = (*list)[i]
-            } else {
-                right[i - middle] = (*list)[i]
-            }
-        }
+        left = (*list)[:middle]
+        right = (*list)[middle:]
 
         // Recursively applying the MergeSort to the left and right sides
-        // Goroutine goes here?
         MergeSort(&left)
         MergeSort(&right)
 
+        (*list) = Merge(left, right)
+    }
+}
+
+func MergeSortGo(list *[]int) {
+    /*
+        This is a merge sort with goroutine
+    */
+
+    size := len(*list)   // Length of the unSortedList
+
+    // If the size of the unSortedList is 1 than the list is already sorted
+    if size > 1 {
+        middle := int(size / 2) // Used to split the list into right and left side
+
+        // Creating list for the right and left side
+        var (
+                left = make([]int, middle)
+                right = make([]int, size - middle)
+            )
+
+        /*
+            Assigned the left side of list to the left
+            Assigned the right side of list to the right
+        */
+        left = (*list)[:middle]
+        right = (*list)[middle:]
+
+        var wg sync.WaitGroup
+        wg.Add(1)
+
+        // Recursively applying the MergeSort to the left and right sides
+        go func() {
+            defer wg.Done() // is the previous goroutine finish?
+            MergeSort(&left)
+        }()
+
+        MergeSort(&right)
+
+        wg.Wait()
         (*list) = Merge(left, right)
     }
 }
