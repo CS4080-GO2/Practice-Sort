@@ -30,7 +30,7 @@ func main() {
         MergeSort(&list)
         duration := time.Since(start)
         // fmt.Println("After:  ", list)
-        fmt.Println("Duration:  ", duration, "(microseconds)")
+        fmt.Println("Duration:  ", duration)
 
         fmt.Println()
 
@@ -40,7 +40,7 @@ func main() {
         MergeSortGo(&temp)
         duration = time.Since(start)
         // fmt.Println("After:  ", temp)
-        fmt.Println("Duration:  ", duration, "(microseconds)")
+        fmt.Println("Duration:  ", duration)
         fmt.Print("\n\n")
 
         size *= 1000
