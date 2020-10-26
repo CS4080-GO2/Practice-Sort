@@ -41,7 +41,7 @@ func main() {
         duration = time.Since(start)
         // fmt.Println("After:  ", temp)
         fmt.Println("Duration:  ", duration, "(microseconds)")
-        fmt.Println("\n")
+        fmt.Print("\n\n")
 
         size *= 1000
     }
@@ -49,7 +49,7 @@ func main() {
     /*
         Explanation on why goroutine made merge sort slower for smaller list
         but faster for larger lists
-        
+
         https://tinyurl.com/y3kcj2uz
     */
 }
