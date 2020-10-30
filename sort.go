@@ -1,4 +1,6 @@
-// Source for sorting algorithm: https://tinyurl.com/yxezgv5k
+// Source for Merge Sort: https://tinyurl.com/yxezgv5k
+// Source for Quick Sort: https://tinyurl.com/y5wspbdm
+
 
 package main
 
@@ -10,6 +12,10 @@ import (
 )
 
 func main() {
+    fmt.Println("+----------------------------------------+")
+    fmt.Println("|               Merge Sort               |")
+    fmt.Println("+----------------------------------------+")
+
     size := 10  // Size of list
 
     // Test for list size of 10  10,000  10,000,000
@@ -50,7 +56,58 @@ func main() {
         Explanation on why goroutine made merge sort slower for smaller list
         but faster for larger lists
 
-        https://tinyurl.com/y3kcj2uz
+        Source:
+            https://tinyurl.com/y3kcj2uz
+    */
+
+
+    // Time comparison to Quick sort
+    fmt.Println("+----------------------------------------+")
+    fmt.Println("|               Quick Sort               |")
+    fmt.Println("+----------------------------------------+")
+
+    size = 10  // Size of list
+
+    // Test for list size of 10  10,000  10,000,000
+    for i := 0; i < 3; i++ {
+        list := generateList(size)   // Randomly generate list
+
+        temp := make([]int, size)
+        for i := 0; i < size; i++ {
+            temp[i] = list[i]
+        }
+
+        // Want to test if goroutine will increase the speed
+
+        fmt.Println("Testing with a list size of ", size)
+        fmt.Println("--- Regular Quick Sort ---")
+        // fmt.Println("Before:  ", list)
+        start := time.Now()
+        QuickSort(&list)
+        duration := time.Since(start)
+        // fmt.Println("After:  ", list)
+        fmt.Println("Duration:  ", duration)
+
+        fmt.Println()
+
+        fmt.Println("--- Quick Sort w/ Goroutine ---")
+        // fmt.Println("Before:  ", temp)
+        start = time.Now()
+        QuickSortGo(&temp)
+        duration = time.Since(start)
+        // fmt.Println("After:  ", temp)
+        fmt.Println("Duration:  ", duration)
+        fmt.Print("\n\n")
+
+        size *= 1000
+    }
+
+    /*
+        Merge sort is better than quick sort when it comes down to larger lists
+
+        Sources:
+            https://www.geeksforgeeks.org/quicksort-better-mergesort/
+            https://tinyurl.com/y3pjob4z
     */
 }
 
@@ -173,4 +230,97 @@ func Merge(left, right []int) (sortedList []int) {
     }
 
     return  // Return the newly sorted list
+}
+
+func QuickSort(list *[]int) {
+    /*
+        Quick Sort implementation
+    */
+
+    size := len(*list)  // The size of the array
+
+    if size > 1 {
+        var (
+            left = 0    // Index at the very left
+            right = size - 1    // Index of the last element
+            pivot = rand.Int() % len(*list) // Pivot idx is randomly selected
+        )
+
+        // Swap the pivot value with the last element
+        // Somewhat ensuring that the pivot is somewhere in middle of list
+        (*list)[pivot], (*list)[right] = (*list)[right], (*list)[pivot]
+
+        // Loop that iterate through list
+        // If element is smaller than pivot, swap
+        // Else continue to the next element
+        for i, _ := range (*list) {
+            if (*list)[i] < (*list)[right] {
+                (*list)[left], (*list)[i] = (*list)[i], (*list)[left]
+                left++
+            }
+        }
+
+        (*list)[left], (*list)[right] = (*list)[right], (*list)[left]
+
+        var (
+            leftSubArr = make([]int, left)
+            rightSubArr = make([]int, len(*list) - left)
+        )
+
+        leftSubArr, rightSubArr = (*list)[:left], (*list)[left + 1:]
+
+        QuickSort(&leftSubArr)
+        QuickSort(&rightSubArr)
+    }
+}
+
+func QuickSortGo(list *[]int) {
+    /*
+        Quick Sort with goroutine
+    */
+
+    size := len(*list)  // The size of the list
+
+    if len(*list) > 1 {
+        var (
+            left = 0    // Index of the left most element
+            right = size - 1    // Index of the list element in list
+            pivot = rand.Int() % len(*list) // Pivot idx is randomly selected
+        )
+
+        // Swap the pivot value with the last element
+        // Somewhat ensuring that the pivot is somewhere in middle of list
+        (*list)[pivot], (*list)[right] = (*list)[right], (*list)[pivot]
+
+        // Loop that iterate through list
+        // If element is smaller than pivot, swap
+        // Else continue to the next element
+        for i, _ := range (*list) {
+            if (*list)[i] < (*list)[right] {
+                (*list)[left], (*list)[i] = (*list)[i], (*list)[left]
+                left++
+            }
+        }
+
+        (*list)[left], (*list)[right] = (*list)[right], (*list)[left]
+
+        var (
+            leftSubArr = make([]int, left)
+            rightSubArr = make([]int, len(*list) - left)
+        )
+
+        leftSubArr, rightSubArr = (*list)[:left], (*list)[left + 1:]
+
+        var wg sync.WaitGroup
+        wg.Add(1)
+
+        // Recursively applying the QuickSort to the left and right sides
+        go func() {
+            defer wg.Done() // is the previous goroutine finish?
+            QuickSort(&leftSubArr)
+        }()
+
+        QuickSort(&rightSubArr)
+        wg.Wait()
+    }
 }
