@@ -8,11 +8,14 @@ import (
 )
 
 func main() {
+    // Will use to generate random integers in list
+    rand.Seed(time.Now().UnixNano())
+
     fmt.Println("+----------------------------------------+")
     fmt.Println("|               Merge Sort               |")
     fmt.Println("+----------------------------------------+")
 
-    size := 10  // Size of list
+    size := 100  // Size of list
 
     // Test for list size of 10  10,000  10,000,000
     for i := 0; i < 3; i++ {
@@ -45,7 +48,7 @@ func main() {
         fmt.Println("Duration:  ", duration)
         fmt.Print("\n\n")
 
-        size *= 1000
+        size *= 100
     }
 
     /*
@@ -62,7 +65,7 @@ func main() {
     fmt.Println("|               Quick Sort               |")
     fmt.Println("+----------------------------------------+")
 
-    size = 10  // Size of list
+    size = 100  // Size of list
 
     // Test for list size of 10  10,000  10,000,000
     for i := 0; i < 3; i++ {
@@ -95,7 +98,7 @@ func main() {
         fmt.Println("Duration:  ", duration)
         fmt.Print("\n\n")
 
-        size *= 1000
+        size *= 100
     }
 
     /*
@@ -112,7 +115,6 @@ func generateRandomList(size int) (randList []int) {
         Used to generate the unsorted list
     */
 
-    rand.Seed(time.Now().UnixNano())
     randList = make([]int, size)
 
     // Reassigning each element in list to a random integer
@@ -136,16 +138,12 @@ func MergeSort(list *[]int) {
     if size > 1 {
         middle := int(size / 2) // Used to split the list into right and left side
 
-        // Creating list for the right and left side
-        left := make([]int, middle)
-        right := make([]int, size - middle)
-
         /*
             Assigned the left side of list to the left
             Assigned the right side of list to the right
         */
-        left = (*list)[:middle]
-        right = (*list)[middle:]
+        left := (*list)[:middle]
+        right := (*list)[middle:]
 
         // Recursively applying the MergeSort to the left and right sides
         MergeSort(&left)
@@ -167,16 +165,12 @@ func MergeSortGo(list *[]int) {
     if size > 1 {
         middle := int(size / 2) // Used to split the list into right and left side
 
-        // Creating list for the right and left side
-        left := make([]int, middle)
-        right := make([]int, size - middle)
-
         /*
             Assigned the left side of list to the left
             Assigned the right side of list to the right
         */
-        left = (*list)[:middle]
-        right = (*list)[middle:]
+        left := (*list)[:middle]
+        right := (*list)[middle:]
 
         /*
             Since we are calling the goroutine recursively, we need to ensure
@@ -272,11 +266,9 @@ func QuickSort(list *[]int) {
     size := len(*list)  // The size of the array
 
     if size > 1 {
-        var (
-            left = 0    // Index at the very left
-            right = size - 1    // Index of the last element
-            pivot = rand.Int() % len(*list) // Pivot idx is randomly selected
-        )
+        left := 0    // Index at the very left
+        right := size - 1    // Index of the last element
+        pivot := rand.Int() % len(*list) // Pivot idx is randomly selected
 
         // Swap the pivot value with the last element
         // Somewhat ensuring that the pivot is somewhere in middle of list
@@ -312,11 +304,9 @@ func QuickSortGo(list *[]int) {
     size := len(*list)  // The size of the list
 
     if len(*list) > 1 {
-        var (
-            left = 0    // Index of the left most element
-            right = size - 1    // Index of the list element in list
-            pivot = rand.Int() % len(*list) // Pivot idx is randomly selected
-        )
+        left := 0    // Index of the left most element
+        right := size - 1    // Index of the list element in list
+        pivot := rand.Intn(999) % len(*list) // Pivot idx is randomly selected
 
         // Swap the pivot value with the last element
         // Somewhat ensuring that the pivot is somewhere in middle of list
