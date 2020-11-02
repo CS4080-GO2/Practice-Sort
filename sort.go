@@ -1,7 +1,3 @@
-// Source for Merge Sort: https://tinyurl.com/yxezgv5k
-// Source for Quick Sort: https://tinyurl.com/y5wspbdm
-
-
 package main
 
 import (
@@ -20,7 +16,7 @@ func main() {
 
     // Test for list size of 10  10,000  10,000,000
     for i := 0; i < 3; i++ {
-        list := generateList(size)   // Randomly generate list
+        list := generateRandomList(size)   // Randomly generate list
 
         temp := make([]int, size)
         for i := 0; i < size; i++ {
@@ -70,7 +66,7 @@ func main() {
 
     // Test for list size of 10  10,000  10,000,000
     for i := 0; i < 3; i++ {
-        list := generateList(size)   // Randomly generate list
+        list := generateRandomList(size)   // Randomly generate list
 
         temp := make([]int, size)
         for i := 0; i < size; i++ {
@@ -111,20 +107,22 @@ func main() {
     */
 }
 
-func generateList(size int) []int {
+func generateRandomList(size int) (randList []int) {
     /*
         Used to generate the unsorted list
     */
 
-    list := make([]int, size)   // Creating a list of all 0's
     rand.Seed(time.Now().UnixNano())
+    randList = make([]int, size)
 
     // Reassigning each element in list to a random integer
     for i := 0; i < size; i++ {
-        list[i] = rand.Intn(999) - rand.Intn(999)
+        // We subtract to give the probability for negative values
+        // Integers from -99 to 99
+        randList[i] = rand.Intn(100) - rand.Intn(100)
     }
 
-    return list
+    return
 }
 
 func MergeSort(list *[]int) {
@@ -139,10 +137,8 @@ func MergeSort(list *[]int) {
         middle := int(size / 2) // Used to split the list into right and left side
 
         // Creating list for the right and left side
-        var (
-                left = make([]int, middle)
-                right = make([]int, size - middle)
-            )
+        left := make([]int, middle)
+        right := make([]int, size - middle)
 
         /*
             Assigned the left side of list to the left
@@ -155,6 +151,7 @@ func MergeSort(list *[]int) {
         MergeSort(&left)
         MergeSort(&right)
 
+        // Merge the two list (left & right)
         (*list) = Merge(left, right)
     }
 }
@@ -171,10 +168,8 @@ func MergeSortGo(list *[]int) {
         middle := int(size / 2) // Used to split the list into right and left side
 
         // Creating list for the right and left side
-        var (
-                left = make([]int, middle)
-                right = make([]int, size - middle)
-            )
+        left := make([]int, middle)
+        right := make([]int, size - middle)
 
         /*
             Assigned the left side of list to the left
@@ -183,18 +178,28 @@ func MergeSortGo(list *[]int) {
         left = (*list)[:middle]
         right = (*list)[middle:]
 
+        /*
+            Since we are calling the goroutine recursively, we need to ensure
+            that the previous goroutine is done before recursively calling the
+            goroutine again.
+        */
         var wg sync.WaitGroup
         wg.Add(1)
 
-        // Recursively applying the MergeSort to the left and right sides
+        // Anonymous goroutine function that complete the mergeSort left list
         go func() {
-            defer wg.Done() // is the previous goroutine finish?
+            defer wg.Done() // Is the previous goroutine finish?
             MergeSort(&left)
         }()
 
+        // Recursively perform MergeSort on right side
         MergeSort(&right)
 
+        // Wait for the goroutine to complete
         wg.Wait()
+
+        // Once completed, merge the left list and right list together
+        // This will result in the a sorted list
         (*list) = Merge(left, right)
     }
 }
@@ -202,31 +207,58 @@ func MergeSortGo(list *[]int) {
 func Merge(left, right []int) (sortedList []int) {
     /*
         Used to merge the left side with the right side
+        Used for merge sort
     */
 
-    sortedList = make([]int, len(left) + len(right))    // return a sorted list
+    // The sorted list should be the size of the left + right side
+    size := len(left) + len(right)
+    sortedList = make([]int, size)    // return a sorted list
 
-    i := 0
-    for len(left) > 0 && len(right) > 0 {
-        // Taking turns adding the smaller value into the sorted list
-        if left[0] < right[0] {
-            sortedList[i] = left[0]
-            left = left[1:]
+    /*
+        i = for left list index
+        j = for right list index
+        k = for sortedList index
+    */
+    i, j, k := 0, 0, 0
+
+    // Traverse through both left and right list
+    for i < len(left) && j < len(right) {
+        /*
+            Look for the smaller value and add that into sortedList first
+            Both left and right list should already be sorted in acending order
+        */
+        if left[i] < right[j] {
+            /*
+                If the value at current index of the left list is smaller than
+                the value at current index of the right list, add the value of
+                the current index of the left list into the sorted list
+            */
+            sortedList[k] = left[i]
+            i++ // Move on to the next element in the left list
         } else {
-            sortedList[i] = right[0]
-            right = right[1:]
+            /*
+                If the value at current index of the right list is smaller than
+                the value at current index of the left list, add the value of
+                the current index of the right list into the sorted list
+            */
+            sortedList[k] = right[j]
+            j++ // Move on to the next element in the right list
         }
-        i++
+        k++ // Increment the index of the sortedList to add next smallest value
     }
 
-    for j := 0; j < len(left); j++ {
-        sortedList[i] = left[j]
-        i++
+    // For the remaining values in right list that are not in sortedList yet
+    for j < len(right) {
+        sortedList[k] = right[j]
+        j++
+        k++
     }
 
-    for j := 0; j < len(right); j++ {
-        sortedList[i] = right[j]
+    // For the remaining values in left list that are not in sortedList yet
+    for i < len(left) {
+        sortedList[k] = left[i]
         i++
+        k++
     }
 
     return  // Return the newly sorted list
@@ -262,10 +294,8 @@ func QuickSort(list *[]int) {
 
         (*list)[left], (*list)[right] = (*list)[right], (*list)[left]
 
-        var (
-            leftSubArr = make([]int, left)
-            rightSubArr = make([]int, len(*list) - left)
-        )
+        leftSubArr := make([]int, left)
+        rightSubArr := make([]int, len(*list) - left)
 
         leftSubArr, rightSubArr = (*list)[:left], (*list)[left + 1:]
 
@@ -304,17 +334,20 @@ func QuickSortGo(list *[]int) {
 
         (*list)[left], (*list)[right] = (*list)[right], (*list)[left]
 
-        var (
-            leftSubArr = make([]int, left)
-            rightSubArr = make([]int, len(*list) - left)
-        )
+        leftSubArr := make([]int, left)
+        rightSubArr := make([]int, len(*list) - left)
 
         leftSubArr, rightSubArr = (*list)[:left], (*list)[left + 1:]
 
+        /*
+            Since we are calling the goroutine recursively, we need to ensure
+            that the previous goroutine is done before recursively calling the
+            goroutine again.
+        */
         var wg sync.WaitGroup
         wg.Add(1)
 
-        // Recursively applying the QuickSort to the left and right sides
+        // Anonymous goroutine function that complete the quickSort left list
         go func() {
             defer wg.Done() // is the previous goroutine finish?
             QuickSort(&leftSubArr)
