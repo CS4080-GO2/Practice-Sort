@@ -1,16 +1,25 @@
 package main
 
 import (
-    "testing"
-    "sort"
-    "fmt"
-    "reflect"
+    "testing"   // Required for Testing
+    "sort"      // Will be using to test if our sort give same result as sort
+    "fmt"       // For Sprintf
+    "reflect"   // List comparison function
+    "math/rand" // Required for random generated list
+    "time"      // Required for random generated list
 )
 
 type TestCase struct {
     Unsorted []int  // The initial list
     Sorted []int    // The expected result
 }
+
+// Global variables
+var (
+    numTest int = 5     // Number of test cases to run for each
+    size int = 20       // Set the size of the list to generate
+    list = make([]TestCase, numTest)    // List to hold all test cases
+)
 
 func TestMergeSort(t *testing.T) {
     /*
@@ -23,15 +32,16 @@ func TestMergeSort(t *testing.T) {
             if MergeSort(myList) == sort.Ints(myList)
     */
 
-    // Default of 500 test cases of randomly generated list
-    numTest := 500
-    list := make([]TestCase, numTest)
+    rand.Seed(time.Now().UnixNano())    // Seed used to generate random vals
 
     for i := 0; i < numTest; i++ {
-        size := 15  // The length of the list
         rList := generateRandomList(size) // A randomly generated list
 
-        // temp is the sorted rList
+        /*
+            temp is a copy of rList
+            rList will be sorted using our sorting function
+            temp will be sorted using standard implemented go sort function
+        */
         temp := make([]int, size)
         for i := 0; i < size; i++ {
             temp[i] = rList[i]
@@ -45,8 +55,14 @@ func TestMergeSort(t *testing.T) {
     // Iterate through the test cases
     for _, tc := range list {
         t.Run(fmt.Sprintf("%v", tc.Unsorted), func(t *testing.T) {
-            MergeSort(&tc.Unsorted) // Use our MergeSort function we implemented
+            // Use our MergeSort function we implemented
+            MergeSort(&tc.Unsorted)
 
+            /*
+                tc.Unsorted = actual sorted result
+                tc.Sorted = expected sorted result
+                Comparing if actual = expected, if so continue, else error
+            */
             if !reflect.DeepEqual(tc.Unsorted, tc.Sorted) {
                 t.Fatalf("Not Equal - %v != %v", tc.Unsorted, tc.Sorted)
             }
@@ -66,12 +82,9 @@ func TestMergeSortGo(t *testing.T) {
             if MergeSortGo(myList) == sort.Ints(myList)
     */
 
-    // Default of 500 test cases of randomly generated list
-    numTest := 500
-    list := make([]TestCase, numTest)
+    rand.Seed(time.Now().UnixNano())
 
     for i := 0; i < numTest; i++ {
-        size := 15  // The length of the list
         rList := generateRandomList(size) // A randomly generated list
 
         // temp is the sorted rList
@@ -88,8 +101,14 @@ func TestMergeSortGo(t *testing.T) {
     // Iterate through the test cases
     for _, tc := range list {
         t.Run(fmt.Sprintf("%v", tc.Unsorted), func(t *testing.T) {
-            MergeSortGo(&tc.Unsorted) // Use our MergeSort function we implemented
+            // Use our MergeSortGo function we implemented
+            MergeSortGo(&tc.Unsorted)
 
+            /*
+                tc.Unsorted = actual sorted result
+                tc.Sorted = expected sorted result
+                Comparing if actual = expected, if so continue, else error
+            */
             if !reflect.DeepEqual(tc.Unsorted, tc.Sorted) {
                 t.Fatalf("Not Equal - %v != %v", tc.Unsorted, tc.Sorted)
             }
@@ -108,12 +127,9 @@ func TestQuickSort(t *testing.T) {
             if QuickSort(myList) == sort.Ints(myList)
     */
 
-    // Default of 500 test cases of randomly generated list
-    numTest := 500
-    list := make([]TestCase, numTest)
+    rand.Seed(time.Now().UnixNano())
 
     for i := 0; i < numTest; i++ {
-        size := 15  // The length of the list
         rList := generateRandomList(size) // A randomly generated list
 
         // temp is the sorted rList
@@ -130,8 +146,14 @@ func TestQuickSort(t *testing.T) {
     // Iterate through the test cases
     for _, tc := range list {
         t.Run(fmt.Sprintf("%v", tc.Unsorted), func(t *testing.T) {
-            QuickSort(&tc.Unsorted) // Use our MergeSort function we implemented
+            // Use our QuickSort function we implemented
+            QuickSort(&tc.Unsorted)
 
+            /*
+                tc.Unsorted = actual sorted result
+                tc.Sorted = expected sorted result
+                Comparing if actual = expected, if so continue, else error
+            */
             if !reflect.DeepEqual(tc.Unsorted, tc.Sorted) {
                 t.Fatalf("Not Equal - %v != %v", tc.Unsorted, tc.Sorted)
             }
@@ -151,12 +173,9 @@ func TestQuickSortGo(t *testing.T) {
             if QuickSortGo(myList) == sort.Ints(myList)
     */
 
-    // Default of 500 test cases of randomly generated list
-    numTest := 500
-    list := make([]TestCase, numTest)
+    rand.Seed(time.Now().UnixNano())
 
     for i := 0; i < numTest; i++ {
-        size := 15  // The length of the list
         rList := generateRandomList(size) // A randomly generated list
 
         // temp is the sorted rList
@@ -173,8 +192,14 @@ func TestQuickSortGo(t *testing.T) {
     // Iterate through the test cases
     for _, tc := range list {
         t.Run(fmt.Sprintf("%v", tc.Unsorted), func(t *testing.T) {
-            QuickSortGo(&tc.Unsorted) // Use our MergeSort function we implemented
+            // Use our QuickSortGo function we implemented
+            QuickSortGo(&tc.Unsorted)
 
+            /*
+                tc.Unsorted = actual sorted result
+                tc.Sorted = expected sorted result
+                Comparing if actual = expected, if so continue, else error
+            */
             if !reflect.DeepEqual(tc.Unsorted, tc.Sorted) {
                 t.Fatalf("Not Equal - %v != %v", tc.Unsorted, tc.Sorted)
             }
