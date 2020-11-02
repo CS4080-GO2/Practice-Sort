@@ -29,7 +29,7 @@ func TestMergeSort(t *testing.T) {
 
     for i := 0; i < numTest; i++ {
         size := 15  // The length of the list
-        rList := generateList(size) // A randomly generated list
+        rList := generateRandomList(size) // A randomly generated list
 
         // temp is the sorted rList
         temp := make([]int, size)
@@ -72,7 +72,7 @@ func TestMergeSortGo(t *testing.T) {
 
     for i := 0; i < numTest; i++ {
         size := 15  // The length of the list
-        rList := generateList(size) // A randomly generated list
+        rList := generateRandomList(size) // A randomly generated list
 
         // temp is the sorted rList
         temp := make([]int, size)
@@ -114,7 +114,7 @@ func TestQuickSort(t *testing.T) {
 
     for i := 0; i < numTest; i++ {
         size := 15  // The length of the list
-        rList := generateList(size) // A randomly generated list
+        rList := generateRandomList(size) // A randomly generated list
 
         // temp is the sorted rList
         temp := make([]int, size)
@@ -157,7 +157,7 @@ func TestQuickSortGo(t *testing.T) {
 
     for i := 0; i < numTest; i++ {
         size := 15  // The length of the list
-        rList := generateList(size) // A randomly generated list
+        rList := generateRandomList(size) // A randomly generated list
 
         // temp is the sorted rList
         temp := make([]int, size)
