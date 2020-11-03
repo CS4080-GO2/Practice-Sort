@@ -59,54 +59,6 @@ func main() {
 	       https://tinyurl.com/y3kcj2uz
 	*/
 
-	// Time comparison to Quick sort
-	fmt.Println("+----------------------------------------+")
-	fmt.Println("|               Quick Sort               |")
-	fmt.Println("+----------------------------------------+")
-
-	size = 100 // Size of list
-
-	// Test for list size of 100, 10,000, 1,000,000
-	for i := 0; i < 3; i++ {
-		list := generateRandomList(size) // Randomly generate list
-
-		temp := make([]int, size)
-		for i := 0; i < size; i++ {
-			temp[i] = list[i]
-		}
-
-		// Want to test if goroutine will increase the speed
-
-		fmt.Println("Testing with a list size of ", size)
-		fmt.Println("--- Regular Quick Sort ---")
-		// fmt.Println("Before:  ", list)
-		start := time.Now()
-		QuickSort(&list)
-		duration := time.Since(start)
-		// fmt.Println("After:  ", list)
-		fmt.Println("Duration:  ", duration)
-
-		fmt.Println()
-
-		fmt.Println("--- Quick Sort w/ Goroutine ---")
-		// fmt.Println("Before:  ", temp)
-		start = time.Now()
-		QuickSortGo(&temp)
-		duration = time.Since(start)
-		// fmt.Println("After:  ", temp)
-		fmt.Println("Duration:  ", duration)
-		fmt.Print("\n\n")
-
-		size *= 100
-	}
-
-	/*
-	   Merge sort is better than quick sort when it comes down to larger lists
-
-	   Sources:
-	       https://www.geeksforgeeks.org/quicksort-better-mergesort/
-	       https://tinyurl.com/y3pjob4z
-	*/
 
 	//Time for insertion sort, no goroutine
 	fmt.Println("+----------------------------------------+")
@@ -286,96 +238,6 @@ func Merge(left, right []int) (sortedList []int) {
 	return // Return the newly sorted list
 }
 
-func QuickSort(list *[]int) {
-	/*
-	   Quick Sort implementation
-	*/
-
-	size := len(*list) // The size of the array
-
-	if size > 1 {
-		left := 0                        // Index at the very left
-		right := size - 1                // Index of the last element
-		pivot := rand.Int() % len(*list) // Pivot idx is randomly selected
-
-		// Swap the pivot value with the last element
-		// Somewhat ensuring that the pivot is somewhere in middle of list
-		(*list)[pivot], (*list)[right] = (*list)[right], (*list)[pivot]
-
-		// Loop that iterate through list
-		// If element is smaller than pivot, swap
-		// Else continue to the next element
-		for i, _ := range *list {
-			if (*list)[i] < (*list)[right] {
-				(*list)[left], (*list)[i] = (*list)[i], (*list)[left]
-				left++
-			}
-		}
-
-		(*list)[left], (*list)[right] = (*list)[right], (*list)[left]
-
-		leftSubArr := make([]int, left)
-		rightSubArr := make([]int, len(*list)-left)
-
-		leftSubArr, rightSubArr = (*list)[:left], (*list)[left+1:]
-
-		QuickSort(&leftSubArr)
-		QuickSort(&rightSubArr)
-	}
-}
-
-func QuickSortGo(list *[]int) {
-	/*
-	   Quick Sort with goroutine
-	*/
-
-	size := len(*list) // The size of the list
-
-	if len(*list) > 1 {
-		left := 0                            // Index of the left most element
-		right := size - 1                    // Index of the list element in list
-		pivot := rand.Intn(999) % len(*list) // Pivot idx is randomly selected
-
-		// Swap the pivot value with the last element
-		// Somewhat ensuring that the pivot is somewhere in middle of list
-		(*list)[pivot], (*list)[right] = (*list)[right], (*list)[pivot]
-
-		// Loop that iterate through list
-		// If element is smaller than pivot, swap
-		// Else continue to the next element
-		for i, _ := range *list {
-			if (*list)[i] < (*list)[right] {
-				(*list)[left], (*list)[i] = (*list)[i], (*list)[left]
-				left++
-			}
-		}
-
-		(*list)[left], (*list)[right] = (*list)[right], (*list)[left]
-
-		leftSubArr := make([]int, left)
-		rightSubArr := make([]int, len(*list)-left)
-
-		leftSubArr, rightSubArr = (*list)[:left], (*list)[left+1:]
-
-		/*
-		   Since we are calling the goroutine recursively, we need to ensure
-		   that the previous goroutine is done before recursively calling the
-		   goroutine again.
-		*/
-		var wg sync.WaitGroup
-		wg.Add(1)
-
-		// Anonymous goroutine function that complete the quickSort left list
-		go func() {
-			defer wg.Done() // is the previous goroutine finish?
-			QuickSort(&leftSubArr)
-		}()
-
-		QuickSort(&rightSubArr)
-		wg.Wait()
-	}
-}
-
 func InsertionSort(list *[]int) {
 	/*
 	   Insertion Sort Implementation
@@ -404,5 +266,4 @@ func InsertionSort(list *[]int) {
 		//Insert current element into index found with above for loop
 		(*list)[y+1] = x
 	}
-
 }
