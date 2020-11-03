@@ -1,54 +1,42 @@
 +----------------------------------------+
 |               Merge Sort               |
 +----------------------------------------+
-Testing with a list size of  10
+Testing with a list size of  100
 --- Regular Merge Sort ---
-Duration:   2.258µs
+Duration:   21.875µs
 
 --- Merge Sort w/ Goroutine ---
-Duration:   16.988µs
+Duration:   20.434µs
 
 
 Testing with a list size of  10000
 --- Regular Merge Sort ---
-Duration:   2.321044ms
+Duration:   1.381126ms
 
 --- Merge Sort w/ Goroutine ---
-Duration:   2.102233ms
+Duration:   850.018µs
 
 
-Testing with a list size of  10000000
+Testing with a list size of  1000000
 --- Regular Merge Sort ---
-Duration:   2.131759745s
+Duration:   128.460007ms
 
 --- Merge Sort w/ Goroutine ---
-Duration:   1.228849303s
+Duration:   75.193881ms
 
 
 +----------------------------------------+
-|               Quick Sort               |
+|               Insertion Sort           |
 +----------------------------------------+
-Testing with a list size of  10
---- Regular Quick Sort ---
-Duration:   2.71µs
-
---- Quick Sort w/ Goroutine ---
-Duration:   17.587µs
+Testing with a list size of  100
+Duration:   4.003µs
 
 
 Testing with a list size of  10000
---- Regular Quick Sort ---
-Duration:   1.485855ms
-
---- Quick Sort w/ Goroutine ---
-Duration:   1.255627ms
+Duration:   24.563825ms
 
 
-Testing with a list size of  10000000
---- Regular Quick Sort ---
-Duration:   59.216509452s
-
---- Quick Sort w/ Goroutine ---
-Duration:   56.410771169s
+Testing with a list size of  1000000
+Duration:   5m1.831199788s
 
 
