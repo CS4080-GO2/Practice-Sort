@@ -5,6 +5,7 @@ import (
 	"math/rand" // Required for random generated list
 	"sync"      // Required for WaitGroup if we are using recursion
 	"time"      // Required for random generated list
+	// "os"
 )
 
 func main() {
@@ -70,11 +71,6 @@ func main() {
 	// Test for list size of 100, 10,000, 1,000,000
 	for i := 0; i < 3; i++ {
 		list := generateRandomList(size) // Randomly generate list
-
-		temp := make([]int, size)
-		for i := 0; i < size; i++ {
-			temp[i] = list[i]
-		}
 
 		fmt.Println("Testing with a list size of ", size)
 		// fmt.Println("Before:  ", list)
